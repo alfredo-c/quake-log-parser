@@ -4,16 +4,15 @@ Quake log parser using [Nest](https://github.com/nestjs/nest) framework TypeScri
 
 ## Solution details
 
-With the nest framework the initial setup is basically running de create project cmd.
-Then structure some clean arquicteture for controller, services e entities domais.
-Having Jest for unit testing
+With the Nest framework the initial setup is basically running the create project cmd.
+Then after structure some clean architecture folder for controller, services e entities domains.
 
-Using the native node.js for read files, first we start by reading the lines for the next game in the log.
+For unit testing, will be using Jest, but Nest provides agnostic tools for this
+
+Using the native Node.js lib for read files, 'fs', first we start by reading the lines for the next game in the log.
 We use the 'ClientUserinfoChanged' keyword to find out the line containing the player name, then by separating the initial 'n\' and end with '\t' pattern.
-As a similar way the line containing the kills by the pattern 'Kill:' after the next ': ' has then name of the player who killed and then who killed with 'killed [X]'
-After this mounts array for each real player (excetp 'world') and count every kill to setup the final resulting json.
-
-
+As a similar way the line containing the kills by the pattern 'Kill:' after the next ': ' we have the name of the player who killed and the one killed by the pattern 'killed [X]'
+After this, its possible to mount an array for each real player (except 'world') and count every kill to setup the final resulting json.
 
 ## Installation
 
