@@ -1,10 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { GameController } from './api/game/game.controller';
+import { IGameService } from './domain/service/i-game-service/i-game-service.interface';
+import { GameFileParserService } from './service/game-file-parser/game-file-parser.service';
 
 @Module({
   imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [GameController],
+  providers: [
+    {
+      provide: IGameService,
+      useClass: GameFileParserService,
+    },
+  ],
 })
 export class AppModule {}
