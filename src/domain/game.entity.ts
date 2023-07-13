@@ -1,5 +1,5 @@
 export class Game {
-  totalKills: number;
+  total_kills: number;
   players: string[];
   kills: object;
 }

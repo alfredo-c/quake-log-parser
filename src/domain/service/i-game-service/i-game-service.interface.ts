@@ -1,8 +1,8 @@
 import { Game } from 'src/domain/game.entity';
 
 export interface IGameService {
-  getAll(): Promise<Game[]>;
-  getById(gameId: number): Promise<Game>;
+  getAll(): Promise<[string, Game][]>;
+  getById(gameId: number): Promise<[string, Game]>;
 }
 
 export const IGameService = Symbol('IGameService');
