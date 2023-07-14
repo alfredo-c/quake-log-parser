@@ -18,7 +18,24 @@ describe('AppController (e2e)', () => {
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')
+      .expect(404)
+  });
+
+  it('/game/ (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/game')
       .expect(200)
-      .expect('Hello World!');
+  });
+
+  it('/game/id (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/game/21')
+      .expect(200)
+  });
+
+  it('/game/id (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/game/22')
+      .expect(204)
   });
 });
