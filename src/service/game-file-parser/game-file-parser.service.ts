@@ -7,7 +7,7 @@ import { GameLine, LineType } from '../../domain/gameLine.entity';
 
 @Injectable()
 export class GameFileParserService implements IGameService {
-  private readonly GAME_LOG_PATH = 'assets/games.log';
+  private readonly GAME_LOG_PATH = 'assets/games.txt';
   private currentGame: Game = new Game();
 
   async getAll(): Promise<[string, Game][]> {

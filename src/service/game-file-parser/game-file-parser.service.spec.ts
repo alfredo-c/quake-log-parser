@@ -6,7 +6,7 @@ describe('GameFileParserService', () => {
 
   /* eslint-disable */
   // @ts-ignore
-  service.GAME_LOG_PATH = 'assets/games-test.log';
+  service.GAME_LOG_PATH = 'assets/games-test.txt';
 
   it('should getAll games', async () => {
     const result = await service.getAll();
