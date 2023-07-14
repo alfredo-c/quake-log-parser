@@ -31,6 +31,7 @@ export class GameFileParserService implements IGameService {
       const gameLine = new GameLine(line.toString('ascii'));
 
       this.ProcessLineGame(gameLine);
+
       if (this.currentGame?.process) {
         arrGames.push(this.currentGame);
         this.currentGame = new Game();
