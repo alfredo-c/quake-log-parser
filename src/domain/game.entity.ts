@@ -2,5 +2,5 @@ export class Game {
   total_kills: number;
   players: string[];
   kills: object;
-  process?: boolean
+  process?: boolean;
 }

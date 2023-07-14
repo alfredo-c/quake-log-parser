@@ -13,12 +13,12 @@ import { IGameService } from '../../domain/service/i-game-service/i-game-service
 @Controller('game')
 export class GameController {
   constructor(
-    @Inject(IGameService) private readonly gameUseCase: IGameService,
+    @Inject(IGameService) private readonly gameService: IGameService,
   ) {}
 
   @Get()
   async getAll(): Promise<[string, Game][]> {
-    return this.gameUseCase.getAll();
+    return this.gameService.getAll();
   }
 
   @Get(':id')
@@ -26,7 +26,7 @@ export class GameController {
     @Res({ passthrough: true }) res: Response,
     @Param() params: any,
   ): Promise<[string, Game]> {
-    const result = await this.gameUseCase.getById(params.id);
+    const result = await this.gameService.getById(params.id);
     if (result) {
       return result;
     }
