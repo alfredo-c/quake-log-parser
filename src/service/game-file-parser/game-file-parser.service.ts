@@ -46,7 +46,9 @@ export class GameFileParserService implements IGameService {
       case LineType.START:
         this.ProcessLineGameStart();
       case LineType.PLAYER:
-      case LineType.KILL:
+        this.ProcessLineGamePlayer(gameLine);
+        case LineType.KILL:
+        this.ProcessLineGameKill();
       case LineType.OTHER:
         break;
     }
@@ -56,6 +58,13 @@ export class GameFileParserService implements IGameService {
     if (this.currentGame) {
       this.currentGame.process = true;
     }
+  }
+
+  private ProcessLineGamePlayer (gameLine: GameLine) {
+    this.currentGame.addPlayer(gameLine.playerName);
+  }
+
+  private ProcessLineGameKill () {
   }
 
   private mapResult(arrGames: Game[]): [string, Game][] {
