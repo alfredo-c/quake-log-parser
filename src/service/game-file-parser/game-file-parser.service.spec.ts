@@ -1,4 +1,3 @@
-import { Game } from '../../domain/game.entity';
 import { GameFileParserService } from './game-file-parser.service';
 
 describe('GameFileParserService', () => {
@@ -10,50 +9,65 @@ describe('GameFileParserService', () => {
 
   it('should getAll games', async () => {
     const result = await service.getAll();
-    console.log(result[0])
-    console.log(result[1])
-    console.log(result[2])
     expect(result.length).toEqual(3);
     expect(result).toStrictEqual([
       {
         "game_1": {
-          "WORLD": "<world>",
+          "total_kills": 0,
           "players": [
             "Isgalamido"
-          ]
+          ],
+          "kills": {}
         }
       },
       {
         "game_2": {
-          "WORLD": "<world>",
+          "total_kills": 11,
           "players": [
             "Dono da Bola",
             "Isgalamido",
             "Mocinha"
-          ]
+          ],
+          "kills": {
+            "Isgalamido": -5
+          }
         }
       },
       {
         "game_3": {
-          "WORLD": "<world>",
+          "total_kills": 4,
           "players": [
             "Dono da Bola",
             "Isgalamido",
             "Mocinha",
             "Zeh"
-          ]
+          ],
+          "kills": {
+            "Isgalamido": 1,
+            "Zeh": -2,
+            "Dono da Bola": -1
+          }
         }
-      }]);
+      }
+    ]);
   });
 
-  // it('should get first game', async () => {
-  //   const result = await service.getById(1);
-  //   const game = new Game();
-  //   expect(result).toStrictEqual({ game_1: game });
-  // });
+  it('should get first game', async () => {
+    const result = await service.getById(1);
+    const game = {
+      "game_1": {
+        "total_kills": 0,
+        "players": [
+          "Isgalamido"
+        ],
+        "kills": {}
+      }
+    }
+    expect(result).toStrictEqual(game);
+  });
 
-  // it('should get null with game not found', async () => {
-  //   const result = await service.getById(4);
-  //   expect(result).toStrictEqual(null);
-  // });
+  it('should get null with game not found', async () => {
+    const result = await service.getById(4);
+    expect(result).toStrictEqual(null);
+  });
 });

@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
-/* eslint-disable */
-const lineByLine = require('n-readlines');
+import Reader from 'n-readlines';
 import { Game } from '../../domain/game.entity';
 import { IGameService } from '../../domain/service/i-game-service/i-game-service.interface';
-import { GameLine, LineType } from '../../domain/gameLine.entity';
+import { GameLine } from '../../domain/gameLine.entity';
+import { LineType } from '../../domain/enum/line-type.enum';
 
 @Injectable()
 export class GameFileParserService implements IGameService {
   private readonly GAME_LOG_PATH = 'assets/games.txt';
-  private currentGame: Game = new Game();
+  private currentGame: Game;
+  private arrGames: Game[];
 
   async getAll(): Promise<[string, Game][]> {
     return this.processLogFile();
@@ -22,49 +23,67 @@ export class GameFileParserService implements IGameService {
     return null;
   }
 
-  private async processLogFile(): Promise<[string, Game][]> {
-    const arrGames = [];
-    const liner = new lineByLine(this.GAME_LOG_PATH);
+  private async processLogFile (): Promise<[string, Game][]> {
+    this.arrGames = []
+    this.currentGame = null;
+    const liner = new Reader(this.GAME_LOG_PATH);
 
-    let line;
+    let line: false | Buffer;
     while ((line = liner.next())) {
       const gameLine = new GameLine(line.toString('ascii'));
 
-      this.ProcessLineGame(gameLine);
+      this.processLineGame(gameLine);
 
       if (this.currentGame?.process) {
-        arrGames.push(this.currentGame);
-        this.currentGame = new Game();
+        this.closeGame();
       }
     }
+    this.checkLastGame();
 
-    return Promise.resolve(this.mapResult(arrGames));
+    return Promise.resolve(this.mapResult(this.arrGames));
   }
 
-  private ProcessLineGame(gameLine: GameLine) {
+  checkLastGame() {
+    if (this.currentGame && !this.currentGame.process) {
+      this.closeGame();
+    }
+  }
+
+  closeGame() {
+    this.arrGames.push(this.currentGame);
+    this.currentGame = new Game();
+  }
+
+  private processLineGame(gameLine: GameLine) {
     switch (gameLine.lineType) {
       case LineType.START:
-        this.ProcessLineGameStart();
+        this.processLineGameStart();
+        break;
       case LineType.PLAYER:
-        this.ProcessLineGamePlayer(gameLine);
-        case LineType.KILL:
-        this.ProcessLineGameKill();
+        this.processLineGamePlayer(gameLine);
+        break;
+      case LineType.KILL:
+        this.processLineGameKill(gameLine);
+        break;
       case LineType.OTHER:
         break;
     }
   }
 
-  private ProcessLineGameStart() {
+  private processLineGameStart() {
     if (this.currentGame) {
       this.currentGame.process = true;
+    } else {
+      this.currentGame = new Game();
     }
   }
 
-  private ProcessLineGamePlayer (gameLine: GameLine) {
+  private processLineGamePlayer(gameLine: GameLine) {
     this.currentGame.addPlayer(gameLine.playerName);
   }
 
-  private ProcessLineGameKill () {
+  private processLineGameKill(gameLine: GameLine) {
+    this.currentGame.processKill(gameLine.playerKill, gameLine.playerKilled);
   }
 
   private mapResult(arrGames: Game[]): [string, Game][] {
@@ -74,7 +93,11 @@ export class GameFileParserService implements IGameService {
     for (const game of arrGames) {
       const gameData = new Map();
       delete game.process;
-      gameData.set(`game_${gameCount++}`, game);
+      const mappedGame = {
+        ...game,
+        kills: Object.fromEntries(game.kills),
+      };
+      gameData.set(`game_${gameCount++}`, mappedGame);
       arrGamesMapped.push(Object.fromEntries(gameData));
     }
 

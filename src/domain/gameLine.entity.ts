@@ -1,9 +1,4 @@
-export enum LineType {
-  START,
-  PLAYER,
-  KILL,
-  OTHER,
-}
+import { LineType } from '../domain/enum/line-type.enum';
 
 export class GameLine {
   lineText: string;
@@ -45,31 +40,36 @@ export class GameLine {
     }
   }
 
-  setPlayerName () {
+  setPlayerName() {
     if (LineType.PLAYER === this.lineType) {
-      const startIdx = this.lineText.indexOf(this.PLAYER_NAME_START_PATTERN) + this.PLAYER_NAME_START_PATTERN.length
-      const endIdx = this.lineText.indexOf(this.PLAYER_NAME_END_PATTERN)
-      this.playerName = this.lineText.substring(startIdx + 1, endIdx - 5).trim()
-      if (!this.playerName) {
-        console.log('this.lineText: ', this.lineText)
-      }
+      const startIdx =
+        this.lineText.indexOf(this.PLAYER_NAME_START_PATTERN) +
+        this.PLAYER_NAME_START_PATTERN.length;
+      const endIdx = this.lineText.indexOf(this.PLAYER_NAME_END_PATTERN);
+      this.playerName = this.lineText
+        .substring(startIdx + 1, endIdx - 5)
+        .trim();
     }
   }
 
-  setPlayerKill () {
+  setPlayerKill() {
     if (LineType.KILL === this.lineType) {
-      let startIdx = this.lineText.indexOf(this.KILL_NAME_START_PATTERN, 1)
-      startIdx = this.lineText.indexOf(this.KILL_NAME_START_PATTERN, startIdx+1) + this.KILL_NAME_START_PATTERN.length
-      const endIdx = this.lineText.indexOf(this.KILL_NAME_END_PATTERN)
-      this.playerKill = this.lineText.substring(startIdx, endIdx).trim()
+      let startIdx = this.lineText.indexOf(this.KILL_NAME_START_PATTERN, 1);
+      startIdx =
+        this.lineText.indexOf(this.KILL_NAME_START_PATTERN, startIdx + 1) +
+        this.KILL_NAME_START_PATTERN.length;
+      const endIdx = this.lineText.indexOf(this.KILL_NAME_END_PATTERN);
+      this.playerKill = this.lineText.substring(startIdx, endIdx).trim();
     }
   }
 
-  setPlayerKilled () {
+  setPlayerKilled() {
     if (LineType.KILL === this.lineType) {
-      const startIdx = this.lineText.indexOf(this.KILLED_NAME_START_PATTERN, 2) + this.KILLED_NAME_START_PATTERN.length
-      const endIdx = this.lineText.indexOf(this.KILLED_NAME_END_PATTERN)
-      this.playerKilled = this.lineText.substring(startIdx, endIdx).trim()
+      const startIdx =
+        this.lineText.indexOf(this.KILLED_NAME_START_PATTERN, 2) +
+        this.KILLED_NAME_START_PATTERN.length;
+      const endIdx = this.lineText.indexOf(this.KILLED_NAME_END_PATTERN);
+      this.playerKilled = this.lineText.substring(startIdx, endIdx).trim();
     }
   }
 }
