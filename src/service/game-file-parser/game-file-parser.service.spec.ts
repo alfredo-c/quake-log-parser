@@ -29,7 +29,7 @@ describe('GameFileParserService', () => {
             "Mocinha"
           ],
           "kills": {
-            "Isgalamido": -5
+            "Isgalamido": -7
           }
         }
       },

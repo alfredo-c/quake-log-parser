@@ -14,27 +14,20 @@ export class Game {
   }
 
   addPlayer(playerName: string) {
-    if (!playerName) {
-      return;
-    }
     if (WORLD === playerName) {
       return;
     }
 
-    if (this.players) {
-      const set = new Set(this.players);
-      set.add(playerName);
-      this.players = [...set].sort();
-    } else {
-      this.players = [playerName];
-    }
+    const set = new Set(this.players);
+    set.add(playerName);
+    this.players = [...set].sort();
   }
 
   processKill(playerKill: string, playerKilled: string) {
     this.total_kills += 1;
     if (WORLD === playerKill) {
       this.subtractKill(playerKilled);
-    } else {
+    } else if (playerKill !== playerKilled) {
       this.addKill(playerKill);
     }
   }

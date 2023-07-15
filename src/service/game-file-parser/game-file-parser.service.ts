@@ -23,8 +23,8 @@ export class GameFileParserService implements IGameService {
     return null;
   }
 
-  private async processLogFile (): Promise<[string, Game][]> {
-    this.arrGames = []
+  private async processLogFile(): Promise<[string, Game][]> {
+    this.arrGames = [];
     this.currentGame = null;
     const liner = new Reader(this.GAME_LOG_PATH);
 
