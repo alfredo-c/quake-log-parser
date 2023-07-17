@@ -52,10 +52,6 @@ export class GameFileParserService implements IGameService {
     }
   }
 
-  setLogGamePath(path: string): void {
-    this.gameLogPath = path;
-  }
-
   private processLogFile(): Game[] {
     this.arrGames = [];
     this.currentGame = null;
