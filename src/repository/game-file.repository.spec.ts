@@ -1,12 +1,14 @@
 import { GameFileRepository } from '../repository/game-file.repository';
 import { Game } from '../domain/entity/game.entity';
 
-jest.mock("fs", () => ({
+jest.mock('fs', () => ({
   promises: {
     writeFile: jest.fn().mockResolvedValue(null),
     readFile: (path: string) => {
-      return (path.indexOf('game_1.json') > 1) ? '{"total_kills":11,"players":["Dono da Bola","Isgalamido","Mocinha"],"kills":{"Isgalamido":-7}}' : undefined
-    }
+      return path.indexOf('game_1.json') > 1
+        ? '{"total_kills":11,"players":["Dono da Bola","Isgalamido","Mocinha"],"kills":{"Isgalamido":-7}}'
+        : undefined;
+    },
   },
 }));
 

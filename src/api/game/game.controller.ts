@@ -12,6 +12,7 @@ import { Response } from 'express';
 import { Game } from '../../domain/entity/game.entity';
 import { IGameService } from '../../domain/service/i-game-service/i-game-service.interface';
 import { GameDto } from '../../api/game/game.dto';
+import { ApiQuery, ApiParam } from '@nestjs/swagger';
 
 @Controller('game')
 export class GameController {
@@ -24,11 +25,13 @@ export class GameController {
     return this.gameService.create();
   }
 
+  @ApiQuery({ type: GameDto })
   @Get()
   async getAll(@Query() query: GameDto): Promise<[string, Game][]> {
     return this.gameService.getAll({ ...query });
   }
 
+  @ApiParam({ name: 'id' })
   @Get(':id')
   async getById(
     @Res({ passthrough: true }) res: Response,
