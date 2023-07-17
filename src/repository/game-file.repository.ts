@@ -31,10 +31,6 @@ export class GameFileRepository implements IGameRepository {
     }
   }
 
-  setLogGamePath(path: string): void {
-    this.gameLogPath = path;
-  }
-
   private getFileName(gameId: number) {
     return `${this.gameLogPath}game_${gameId}.json`;
   }

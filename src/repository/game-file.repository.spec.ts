@@ -1,6 +1,15 @@
 import { GameFileRepository } from '../repository/game-file.repository';
 import { Game } from '../domain/entity/game.entity';
 
+jest.mock("fs", () => ({
+  promises: {
+    writeFile: jest.fn().mockResolvedValue(null),
+    readFile: (path: string) => {
+      return (path.indexOf('game_1.json') > 1) ? '{"total_kills":11,"players":["Dono da Bola","Isgalamido","Mocinha"],"kills":{"Isgalamido":-7}}' : undefined
+    }
+  },
+}));
+
 describe('GameFileRepository', () => {
   const kills = new Map();
   kills.set('Isgalamido', -7);
@@ -12,14 +21,13 @@ describe('GameFileRepository', () => {
   game.process = true;
 
   const repo = new GameFileRepository();
-  repo.setLogGamePath('assets/games-test/');
 
   it('should create game on json file', async () => {
     await repo.create(21, game);
   });
 
   it('should read a game from json file', async () => {
-    const gameFromFile = await repo.getById(21);
+    const gameFromFile = await repo.getById(1);
     expect(gameFromFile).toStrictEqual({
       total_kills: 11,
       players: ['Dono da Bola', 'Isgalamido', 'Mocinha'],
@@ -28,7 +36,7 @@ describe('GameFileRepository', () => {
   });
 
   it('should return undefined when game does not exists', async () => {
-    const gameFromFile = await repo.getById(22);
+    const gameFromFile = await repo.getById(2);
     expect(gameFromFile).toBe(undefined);
   });
 });
