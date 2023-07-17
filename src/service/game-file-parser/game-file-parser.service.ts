@@ -1,32 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import Reader from 'n-readlines';
-import { Game } from '../../domain/game.entity';
+import { Game } from '../../domain/entity/game.entity';
 import { IGameService } from '../../domain/service/i-game-service/i-game-service.interface';
-import { GameLine } from '../../domain/gameLine.entity';
+import { GameLine } from '../../domain/entity/gameLine.entity';
 import { LineType } from '../../domain/enum/line-type.enum';
+import { GameServiceInput } from '../../domain/service/i-game-service/game-service-input';
+import { IGameRepository } from '../../domain/repository/i-game-repository/i-game-repository.interface';
 
 @Injectable()
 export class GameFileParserService implements IGameService {
-  private readonly GAME_LOG_PATH = 'assets/games.txt';
+  private gameLogPath = 'assets/games.txt';
   private currentGame: Game;
   private arrGames: Game[];
 
-  async getAll(): Promise<[string, Game][]> {
-    return this.processLogFile();
+  constructor(
+    @Inject(IGameRepository) private readonly gameRepository: IGameRepository,
+  ) {}
+
+  async create(): Promise<number> {
+    const games = this.processLogFile();
+
+    let gameCount = 1;
+    for (const game of games) {
+      await this.gameRepository.create(gameCount++, game);
+    }
+
+    return games.length;
+  }
+
+  async getAll(input: GameServiceInput): Promise<[string, Game][]> {
+    const games = [];
+
+    const total = input.offset + input.limit;
+    for (let gameId = input.offset; gameId < total; gameId++) {
+      const game = await this.gameRepository.getById(gameId);
+      if (game) {
+        games.push(game);
+      }
+    }
+
+    return this.mapResult(input.offset, games);
   }
 
   async getById(gameId: number): Promise<[string, Game]> {
-    const games = await this.processLogFile();
-    if (games.length >= gameId) {
-      return games[gameId - 1];
+    const game = await this.gameRepository.getById(gameId);
+
+    if (game) {
+      const mappedGame = this.mapResult(gameId, [game]);
+
+      return mappedGame[0];
     }
-    return null;
   }
 
-  private async processLogFile(): Promise<[string, Game][]> {
+  setLogGamePath(path: string): void {
+    this.gameLogPath = path;
+  }
+
+  private processLogFile(): Game[] {
     this.arrGames = [];
     this.currentGame = null;
-    const liner = new Reader(this.GAME_LOG_PATH);
+    const liner = new Reader(this.gameLogPath);
 
     let line: false | Buffer;
     while ((line = liner.next())) {
@@ -40,7 +73,7 @@ export class GameFileParserService implements IGameService {
     }
     this.checkLastGame();
 
-    return Promise.resolve(this.mapResult(this.arrGames));
+    return this.arrGames;
   }
 
   checkLastGame() {
@@ -86,18 +119,16 @@ export class GameFileParserService implements IGameService {
     this.currentGame.processKill(gameLine.playerKill, gameLine.playerKilled);
   }
 
-  private mapResult(arrGames: Game[]): [string, Game][] {
+  private mapResult(
+    firstGameNumber: number,
+    arrGames: Game[],
+  ): [string, Game][] {
     const arrGamesMapped: [string, Game][] = [];
 
-    let gameCount = 1;
+    let gameCount = firstGameNumber;
     for (const game of arrGames) {
       const gameData = new Map();
-      delete game.process;
-      const mappedGame = {
-        ...game,
-        kills: Object.fromEntries(game.kills),
-      };
-      gameData.set(`game_${gameCount++}`, mappedGame);
+      gameData.set(`game_${gameCount++}`, game);
       arrGamesMapped.push(Object.fromEntries(gameData));
     }
 

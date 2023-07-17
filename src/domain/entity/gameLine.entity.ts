@@ -1,4 +1,4 @@
-import { LineType } from '../domain/enum/line-type.enum';
+import { LineType } from '../../domain/enum/line-type.enum';
 
 export class GameLine {
   lineText: string;

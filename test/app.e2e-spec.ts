@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
 
@@ -12,22 +12,39 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer()).get('/').expect(404);
+  it('/ (GET)', async () => {
+    const result = await request(app.getHttpServer()).get('/');
+    expect(result.status).toBe(404);
   });
 
-  it('/game/ (GET)', () => {
-    return request(app.getHttpServer()).get('/game').expect(200);
+  it('/game (POST)', async () => {
+    const result = await request(app.getHttpServer()).post('/game');
+    expect(result.status).toBe(201);
   });
 
-  it('/game/id (GET)', () => {
-    return request(app.getHttpServer()).get('/game/21').expect(200);
+  it('/game/ (GET)', async () => {
+    const result = await request(app.getHttpServer()).get('/game');
+    expect(result.status).toBe(200);
   });
 
-  it('/game/id (GET)', () => {
-    return request(app.getHttpServer()).get('/game/22').expect(204);
+  it('/game/id (GET)', async () => {
+    const result = await request(app.getHttpServer()).get('/game/21');
+    expect(result.status).toBe(200);
+  });
+
+  it('/game/id (GET)', async () => {
+    const result = await request(app.getHttpServer()).get('/game/22');
+    expect(result.status).toBe(204);
+  });
+
+  it('/game/id (GET) - should throws bad request when pass invalid query params', async () => {
+    const result = await request(app.getHttpServer()).get(
+      '/game/?limit=11&offset=0',
+    );
+    expect(result.status).toBe(400);
   });
 });

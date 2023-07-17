@@ -4,11 +4,14 @@ import {
   HttpStatus,
   Inject,
   Param,
+  Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { Game } from 'src/domain/game.entity';
+import { Game } from '../../domain/entity/game.entity';
 import { IGameService } from '../../domain/service/i-game-service/i-game-service.interface';
+import { GameDto } from '../../api/game/game.dto';
 
 @Controller('game')
 export class GameController {
@@ -16,9 +19,14 @@ export class GameController {
     @Inject(IGameService) private readonly gameService: IGameService,
   ) {}
 
+  @Post()
+  async create(): Promise<number> {
+    return this.gameService.create();
+  }
+
   @Get()
-  async getAll(): Promise<[string, Game][]> {
-    return this.gameService.getAll();
+  async getAll(@Query() query: GameDto): Promise<[string, Game][]> {
+    return this.gameService.getAll({ ...query });
   }
 
   @Get(':id')

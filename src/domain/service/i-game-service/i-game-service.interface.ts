@@ -1,7 +1,9 @@
-import { Game } from 'src/domain/game.entity';
+import { GameServiceInput } from '../../../domain/service/i-game-service/game-service-input';
+import { Game } from '../../../domain/entity/game.entity';
 
 export interface IGameService {
-  getAll(): Promise<[string, Game][]>;
+  create(): Promise<number>;
+  getAll(input: GameServiceInput): Promise<[string, Game][]>;
   getById(gameId: number): Promise<[string, Game]>;
 }
 

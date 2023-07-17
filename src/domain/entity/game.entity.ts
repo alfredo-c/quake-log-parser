@@ -1,4 +1,4 @@
-import { WORLD } from '../domain/const/constants';
+import { WORLD } from '../../domain/const/constants';
 
 export class Game {
   total_kills: number;

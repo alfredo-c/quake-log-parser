@@ -1,4 +1,4 @@
-import { Game } from '../domain/game.entity';
+import { Game } from './game.entity';
 
 describe('Game', () => {
   const realPlayer = 'Dono da bola';

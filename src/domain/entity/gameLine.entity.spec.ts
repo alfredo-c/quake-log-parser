@@ -1,4 +1,4 @@
-import { GameLine } from '../domain/gameLine.entity';
+import { GameLine } from './gameLine.entity';
 
 describe('GameLine', () => {
   describe('playerLine', () => {
