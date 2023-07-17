@@ -45,6 +45,13 @@ describe('GameController', () => {
     controller = new GameController(gameFileParserServiceMock);
   });
 
+  describe('create', () => {
+    it('should create games', async () => {
+      const actualResult = await controller.create();
+      expect(actualResult).toStrictEqual(gamesMocked.length);
+    });
+  });
+
   describe('getAll', () => {
     it('should return an array of games', async () => {
       const queryRequest = {

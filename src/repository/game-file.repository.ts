@@ -26,8 +26,8 @@ export class GameFileRepository implements IGameRepository {
       const fileJson = await fs.promises.readFile(fileName);
 
       return JSON.parse(fileJson.toString());
-    } catch (err) {
-      console.debug('GameFileRepository: NOT FOUND, ', err);
+    } catch {
+      return;
     }
   }
 
