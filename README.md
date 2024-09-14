@@ -76,7 +76,7 @@ API to demonstrated purpose only.
 
 ## Stay in touch
 
-- Author - [Alfredo Carvalho](https://www.linkedin.com/in/alfredo-de-carvalho-neto-0b671721/)
+- Author - [Alfredo Carvalho](www.linkedin.com/in/alfredo-carvalho-neto)
 
 ## License
 
